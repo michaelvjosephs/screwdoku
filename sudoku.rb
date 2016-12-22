@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative "board"
 require 'colorize'
 
@@ -10,7 +11,7 @@ class SudokuGame
   end
 
   def initialize(board)
-    @board = [[]]
+    @board = board
   end
 
   def method_missing(method_name, *args)
@@ -41,11 +42,20 @@ class SudokuGame
     pos
   end
 
+  def parse_pos(pos)
+    pos.split(",").map(&:to_i)
+  end
+
+  def parse_val(val)
+    val.to_i
+  end
+
   def get_val
     val = nil
     until val && valid_val?(val)
       puts "Please enter a value between 1 and 9 (0 to clear the tile)"
       print "> "
+
       val = parse_val(gets.chomp)
     end
     val
@@ -65,7 +75,7 @@ class SudokuGame
   end
 
   def solved?
-    board.solved?
+    board.terminate?
   end
 
   def valid_pos?(pos)
@@ -85,3 +95,4 @@ end
 
 
 game = SudokuGame.from_file("puzzles/sudoku1.txt")
+game.run
